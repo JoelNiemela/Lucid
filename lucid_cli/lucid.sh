@@ -16,6 +16,8 @@ case "$1" in
 		if [ ! -d "./$2" ]
 		then
 			cp -R "$SCRIPT_DIR/base_project" "./$2"
+			# Make sure to create empty directories ignored by github
+			mkdir "./$2/models"
 		else
 			echo "Directory $2 already exists."
 			exit 1
