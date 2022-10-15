@@ -1,11 +1,12 @@
 <?php
 
 require LUCID . 'database.php';
+require_once LUCID . 'casing.php';
 
 class Model {
     private static function table(): string {
 		$class = static::class;
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $class));
+        return Casing::pascal_to_snake($class);
     }
 
     private static function model(): string {

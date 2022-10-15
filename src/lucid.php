@@ -5,6 +5,8 @@ define('APP', $lucid_app . '/');
 
 $routes = require APP . '/routes.php';
 
+require_once LUCID . 'casing.php';
+
 $resource = '';
 $action = NULL;
 $args = [];
@@ -27,7 +29,7 @@ $controller_path = APP . '/controllers/' . $resource . '_controller.php';
 if (file_exists($controller_path)) {
 	require $controller_path;
 
-	$controller_name = ucfirst($resource).'Controller';
+	$controller_name = Casing::snake_to_pascal($resource).'Controller';
 	$controller = new $controller_name();
 
 	if (!isset($action)) {
