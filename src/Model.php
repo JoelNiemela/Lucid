@@ -13,6 +13,27 @@ class Model {
 		return static::class;
     }
 
+    public function update(array $params): void {
+        $param_columns = array_keys($params);
+        $param_values = array_values($params);
+
+        $updates = [];
+        foreach ($param_columns as $column) {
+            $updates[] = "{$column} = ?";
+        }
+
+        $set = implode(", ", $updates);
+
+        $table = static::table();
+        $primary_key = static::primary_key();
+        $primary_key_value = $this->get_primary_key();
+        DB::query("
+            UPDATE {$table}
+               SET {$set}
+             WHERE {$primary_key} = {$primary_key_value}
+        ");
+    }
+
     public static function all(): array {
         $table = static::table();
         $stmt = DB::query("
