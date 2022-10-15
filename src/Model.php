@@ -43,7 +43,7 @@ class Model {
             UPDATE {$table}
                SET {$updates}
              WHERE {$primary_key} = :primary_key
-        ", ['primary_key' => $this->get_primary_key()]);
+        ", primary_key: $this->get_primary_key());
     }
 
     public static function all(): array {
