@@ -21,4 +21,4 @@ To create a new project, simply run `lucid init <name>`. This will create a new 
 
 ## About Lucid
 
-Lucid is currently in early development; the latest version is 0.1.0-alpha.
+Lucid is currently in early development; the latest version is 0.1.1-alpha.
