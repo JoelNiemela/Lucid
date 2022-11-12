@@ -31,19 +31,26 @@ class Model {
     }
 
     public function update(array $params): void {
+        $param_columns = array_keys($params);
+        $param_values = array_values($params);
+
         $updates_list = [];
-        foreach ($params as $column => $value) {
-            $updates_list[] = "{$column} = {$value}";
+        foreach ($param_columns as $column) {
+            $updates_list[] = "{$column} = ?";
         }
         $updates = implode(", ", $updates_list);
+
+        if (empty($updates)) {
+            return;
+        }
 
         $table = static::table();
         $primary_key = static::primary_key();
         DB::query("
             UPDATE {$table}
                SET {$updates}
-             WHERE {$primary_key} = :primary_key
-        ", primary_key: $this->get_primary_key());
+             WHERE {$primary_key} = ?;
+        ", ...[...$param_values, $this->get_primary_key()]);
     }
 
     public static function all(): array {
