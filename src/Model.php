@@ -13,6 +13,46 @@ class Model {
 		return static::class;
     }
 
+    private static function primary_key(): string {
+        $table = static::table();
+        $stmt = db::query("
+            SHOW keys
+            FROM {$table}
+           WHERE key_name = 'primary';
+        ");
+
+        $primary_key = $stmt->fetch()['Column_name'];
+        return $primary_key;
+    }
+
+    private function get_primary_key(): mixed {
+        $primary_key = static::primary_key();
+        return $this->$primary_key;
+    }
+
+    public function update(array $params): void {
+        $param_columns = array_keys($params);
+        $param_values = array_values($params);
+
+        $updates_list = [];
+        foreach ($param_columns as $column) {
+            $updates_list[] = "{$column} = ?";
+        }
+        $updates = implode(", ", $updates_list);
+
+        if (empty($updates)) {
+            return;
+        }
+
+        $table = static::table();
+        $primary_key = static::primary_key();
+        DB::query("
+            UPDATE {$table}
+               SET {$updates}
+             WHERE {$primary_key} = ?;
+        ", ...[...$param_values, $this->get_primary_key()]);
+    }
+
     public static function all(): array {
         $table = static::table();
         $stmt = DB::query("
@@ -101,13 +141,7 @@ class Model {
         $values = implode(", ", array_fill(0, count($params), '?'));
 
         $table = static::table();
-        $stmt = db::query("
-            SHOW keys
-            FROM {$table}
-           WHERE key_name = 'primary';
-        ");
-
-        $primary_key = $stmt->fetch()['Column_name'];
+        $primary_key = static::primary_key();
         $stmt = DB::query("
             INSERT INTO {$table} ($columns)
             VALUES ({$values})
