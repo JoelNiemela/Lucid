@@ -11,7 +11,11 @@ $resource = '';
 $action = NULL;
 $args = [];
 
-$url = $_SERVER['PATH_INFO'] ?? '/';
+if (isset($USE_RELATIVE_PATH_INFO)) {
+    $url = $_SERVER['PATH_INFO'] ?? '/';
+} else {
+    $url = $_SERVER['REQUEST_URI'] ?? '/';
+}
 
 foreach ($routes as $route => $target) {
     if (preg_match($route, $url, $match_args)) {
