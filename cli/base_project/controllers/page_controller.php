@@ -3,7 +3,7 @@
 require LUCID . 'view.php';
 
 class PageController {
-	function index() {
+	public function index() {
 		view('Page/home.php');
 	}
 }
